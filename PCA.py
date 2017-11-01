@@ -33,6 +33,7 @@ with conn.cursor() as cursor:
     for row in cursor:
         if it < 3:
             json_desc = json.loads(row[2])
+            print(len(json_desc['sift']))
             list_conca = list_conca + json_desc['sift']
             print("Passage n°",it)
             it+=1
@@ -119,12 +120,12 @@ print(max(Y_y))
 #%%
 #plt.plot(Y_x,Y_y, 'ro')
 
-for k in range (0,1):
-    if k in range(0,1):
+for k in range (0,156):
+    if k in range(0,57):
         plt.plot(Y_x[k],Y_y[k], 'ro')
-    elif k in range (1,2):
+    elif k in range (57,137):
         plt.plot(Y_x[k],Y_y[k], 'bs')
-    elif k in range (2,3):
+    elif k in range (137,156):
         plt.plot(Y_x[k],Y_y[k], 'g^')
 
     
