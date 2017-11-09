@@ -1,0 +1,16 @@
+,0
+AJ_make_moons_linear_kernel,0.704
+AJ_make_moons_nonkernlized,0.744
+AJ_make_circles_linear_kernel,0.5
+AJ_make_circles_nonkernlized,0.5
+AJ_make_classification_linear_kernel,0.404
+AJ_make_classification_nonkernlized,0.376
+AJ_make_moons_rbf_kernel,1.0
+AJ_make_circles_rbf_kernel,0.492
+AJ_make_classification_rbf_kernel,0.488
+AJ_make_moons_poly_kernel,0.724
+AJ_make_circles_poly_kernel,0.7
+AJ_make_classification_poly_kernel,0.472
+AJ_make_moons_laplacian_kernel,0.152
+AJ_make_circles_laplacian_kernel,0.488
+AJ_make_classification_laplacian_kernel,0.364

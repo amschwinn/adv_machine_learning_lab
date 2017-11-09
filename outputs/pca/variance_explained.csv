@@ -1,6 +1,37 @@
 ,0
-AJ_make_moons_linear_kernel,100.00000000000001
+AJ_make_moons_linear_kernel,100.0
 AJ_make_moons_nonkernlized,100.0
-AJ_make_moons_rbf_kernel,57.113161842958235
-AJ_make_moons_poly_kernel,99.99999999999989
-AJ_make_moons_laplacian_kernel,34.86460775422824
+AJ_make_circles_linear_kernel,100.0
+AJ_make_circles_nonkernlized,100.0
+AJ_make_swiss_roll_linear_kernel,71.8553113479
+AJ_make_swiss_roll_nonkernlized,100.0
+AJ_make_classification_linear_kernel,23.6276205887
+AJ_make_classification_nonkernlized,23.9081175382
+AJ_make_moons_rbf_kernel,15.0339872604
+AJ_make_circles_rbf_kernel,13.3932151862
+AJ_make_swiss_roll_rbf_kernel,1.56018969311
+AJ_make_classification_rbf_kernel,0.803212851406
+AJ_make_moons_poly_kernel,98.6666299722
+AJ_make_circles_poly_kernel,45.628699664
+AJ_make_swiss_roll_poly_kernel,57.6575034686
+AJ_make_classification_poly_kernel,23.4130057404
+AJ_make_moons_laplacian_kernel,3.7424579428
+AJ_make_circles_laplacian_kernel,2.42600815148
+AJ_make_swiss_roll_laplacian_kernel,1.03815176297
+AJ_make_classification_laplacian_kernel,0.803212851406
+SK_make_moons_linear,100.0
+SK_make_moons_nonkernlized,[ 0.8199863  1.       ]
+SK_make_circles_linear,100.0
+SK_make_circles_nonkernlized,[ 0.5  1. ]
+SK_make_swiss_roll_linear,100.0
+SK_make_swiss_roll_nonkernlized,[ 0.37653886  0.71855311]
+SK_make_classification_linear,100.0
+SK_make_classification_nonkernlized,[ 0.14633644  0.23627621]
+SK_make_moons_rbf,100.0
+SK_make_circles_rbf,100.0
+SK_make_swiss_roll_rbf,100.0
+SK_make_classification_rbf,100.0
+SK_make_moons_poly,100.0
+SK_make_circles_poly,100.0
+SK_make_swiss_roll_poly,100.0
+SK_make_classification_poly,100.0

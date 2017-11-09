@@ -104,7 +104,7 @@ def pca(x, n_components, need_cov = False):
     
     return X_kpca, cum_var_exp
 #%%
-def pca_plots(k_trick,generator,x,y,pca,k_pca):
+def pca_plots(k_trick,generator,x,y,pca,k_pca,prefix,use_kernel_name = False):
     #Plot original dataset
     #plot swiss roll in 3d
     if generator.__name__ == 'make_swiss_roll':
@@ -134,7 +134,7 @@ def pca_plots(k_trick,generator,x,y,pca,k_pca):
         plt.figure()
         plt.scatter(pca[:, 0], np.zeros((len(pca[:, 0]),1)), alpha=.75,
                     cmap=plt.cm.rainbow, c=y)
-        name = str(generator.__name__) + ' non-kernilized first PC'
+        name = prefix + str(generator.__name__) + ' non-kernilized first PC'
         filename = 'outputs/pca/' + name
         plt.title(name)
         plt.savefig(filename)
@@ -144,7 +144,7 @@ def pca_plots(k_trick,generator,x,y,pca,k_pca):
         plt.figure()
         plt.scatter(pca[:, 0], pca[:, 1], alpha=.75, c=y, 
                     cmap=plt.cm.rainbow)
-        name = str(generator.__name__) + ' non-kernilized first 2 PCs'
+        name = prefix + str(generator.__name__) + ' non-kernilized first 2 PCs'
         filename = 'outputs/pca/' + name
         plt.title(name)
         plt.xlabel('First PC')
@@ -160,7 +160,7 @@ def pca_plots(k_trick,generator,x,y,pca,k_pca):
                     alpha=.75, color='red')
         plt.scatter(pca[y==0, 0], np.zeros((len(pca[y==0, 0]),1)), 
                     alpha=.75, color='blue')
-        name = str(generator.__name__) + ' non-kernilized first PC'
+        name = prefix + str(generator.__name__) + ' non-kernilized first PC'
         filename = 'outputs/pca/' + name
         plt.title(name)
         plt.savefig(filename)
@@ -170,7 +170,7 @@ def pca_plots(k_trick,generator,x,y,pca,k_pca):
         plt.figure()
         plt.scatter(pca[y==1, 0], pca[y==1, 1], alpha=.75, color='red')
         plt.scatter(pca[y==0, 0], pca[y==0, 1], alpha=.75, color='blue')
-        name = str(generator.__name__) + ' non-kernilized first 2 PCs'
+        name =prefix +  str(generator.__name__) + ' non-kernilized first 2 PCs'
         filename = 'outputs/pca/' + name
         plt.title(name)
         plt.xlabel('First PC')
@@ -185,7 +185,11 @@ def pca_plots(k_trick,generator,x,y,pca,k_pca):
         plt.figure()
         plt.scatter(k_pca[:, 0], np.zeros((len(k_pca[:, 0]),1)), alpha=.75,
                     cmap=plt.cm.rainbow, c=y)
-        name = str(generator.__name__) + ' ' + str(k_trick.__name__) + \
+        if use_kernel_name == True:
+            name = prefix + str(generator.__name__) + ' ' + str(k_trick)+\
+                      ' first PC'
+        else:
+            name = prefix + str(generator.__name__) + ' ' + str(k_trick.__name__)+\
                   ' first PC'
         filename = 'outputs/pca/' + name
         plt.title(name)
@@ -196,8 +200,13 @@ def pca_plots(k_trick,generator,x,y,pca,k_pca):
         plt.figure()
         plt.scatter(k_pca[:, 0], k_pca[:, 1], alpha=.75, c=y, 
                     cmap=plt.cm.rainbow)
-        name = str(generator.__name__) + ' ' + str(k_trick.__name__) + \
+        if use_kernel_name == True:
+            name = prefix + str(generator.__name__) + ' ' + str(k_trick)+\
                   ' first 2 PCs'
+        else:
+            name = prefix + str(generator.__name__) + ' ' + str(k_trick.__name__)+\
+                  ' first 2 PCs'
+        
         filename = 'outputs/pca/' + name
         plt.title(name)
         plt.xlabel('First PC')
@@ -212,7 +221,11 @@ def pca_plots(k_trick,generator,x,y,pca,k_pca):
                     alpha=.75, color='red')
         plt.scatter(k_pca[y==0, 0], np.zeros((len(k_pca[y==0, 0]),1)), 
                     alpha=.75, color='blue')
-        name = str(generator.__name__) + ' ' + str(k_trick.__name__) + \
+        if use_kernel_name == True:
+            name = prefix + str(generator.__name__) + ' ' + str(k_trick)+\
+                      ' first PC'
+        else:
+            name = prefix + str(generator.__name__) + ' ' + str(k_trick.__name__)+\
                   ' first PC'
         filename = 'outputs/pca/' + name
         plt.title(name)
@@ -223,7 +236,11 @@ def pca_plots(k_trick,generator,x,y,pca,k_pca):
         plt.figure()
         plt.scatter(k_pca[y==1, 0], k_pca[y==1, 1], alpha=.75, color='red')
         plt.scatter(k_pca[y==0, 0], k_pca[y==0, 1], alpha=.75, color='blue')
-        name = str(generator.__name__) + ' ' + str(k_trick.__name__) + \
+        if use_kernel_name == True:
+            name = prefix + str(generator.__name__) + ' ' + str(k_trick)+\
+                  ' first 2 PCs'
+        else:
+            name = prefix + str(generator.__name__) + ' ' + str(k_trick.__name__)+\
                   ' first 2 PCs'
         filename = 'outputs/pca/' + name
         plt.title(name)

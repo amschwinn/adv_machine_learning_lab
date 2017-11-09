@@ -20,9 +20,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
 from sklearn.decomposition import KernelPCA
-from sklearn.datasets import make_moons
-from sklearn.datasets import make_circles
+from sklearn.decomposition import PCA
+from sklearn.datasets import make_moons, make_circles, make_classification
 from sklearn.datasets.samples_generator import make_swiss_roll
+from sklearn.cluster import KMeans
 
 
 #Load our built lab functions
@@ -43,7 +44,7 @@ kernels = [AJ_kernels.linear_kernel,AJ_kernels.rbf_kernel,
 
 benchmark_kernels = ["linear","rbf","poly"]
 
-data_benchmarks = [make_moons,make_circles,make_swiss_roll]
+data_benchmarks = [make_moons,make_circles,make_swiss_roll,make_classification]
 
 run_times = {}
 variance_explained = {}
@@ -51,7 +52,7 @@ variance_explained = {}
 #Iterate through kernels to compare with non-kernelized PCA
 for k_trick in kernels:
     #Iterate through data benchmarks
-    for generator in data_benchmarks[0:1]:
+    for generator in data_benchmarks:
         #Generate data
         x, y = generator(n_samples=250, random_state=613)
 
@@ -61,8 +62,10 @@ for k_trick in kernels:
         #start by kernelizing data
         #Add params when necessary
         if (k_trick.__name__ == "linear_kernel"):
+            #start run timer
+            start = timeit.default_timer()
             k = k_trick(x)
-        elif (k_trick.__name__ == "laplacian_kernel"):
+        elif (k_trick.__name__ == "poly_kernel"):
             #find best p value
             var_cum = []
             poly_var = []
@@ -73,7 +76,10 @@ for k_trick in kernels:
                 var_cum = var_cum + [k_var_explain]
                 poly_var = poly_var + [poly]
             #Use p value that had highest variance expalined
-            poly = poly_var[var_cum.index(max(var_cum))]
+            #poly = poly_var[var_cum.index(max(var_cum))]
+            #start run timer
+            start = timeit.default_timer()
+            poly = 7
             k = k_trick(x,poly)
         else:
             var_cum = []
@@ -85,7 +91,10 @@ for k_trick in kernels:
                 var_cum = var_cum + [k_var_explain]
                 gamma_var = gamma_var + [gamma]
             #Use p value that had highest variance expalined
-            gamma = gamma_var[var_cum.index(max(var_cum))]
+            #start run timer
+            start = timeit.default_timer()
+            #gamma = gamma_var[var_cum.index(max(var_cum))]
+            gamma = 15
             k = k_trick(x,gamma)
         
         #center grahm matrix
@@ -109,8 +118,8 @@ for k_trick in kernels:
         variance_explained[dict_name] = var_explain
         
         #Plot to compare
-        AJ_PCA.pca_plots(k_trick,generator,x,y,pca,k_pca)                  
-            
+        AJ_PCA.pca_plots(k_trick,generator,x,y,pca,k_pca,"AJ_")                  
+#%%            
 #Iterate through kernels to compare with non-kernelized PCA
 for k_trick in benchmark_kernels:
     #Iterate through data benchmarks
@@ -123,15 +132,37 @@ for k_trick in benchmark_kernels:
         start = timeit.default_timer()
         
         #Run scikitlearn's PCA
-        SK_pca = KernelPCA(n_components=1, kernel=k_trick, gamma=15)
-        SK_k_pca = SK_pca.fit_transform(x)
+        SK_k_pca = KernelPCA(n_components=2, kernel=k_trick, 
+                             gamma=15).fit(x)
         
         #Record run time
         end = timeit.default_timer()
         SK_run_time = end-start
-        dict_name = 'scikit_' + generator.__name__ + '_' + k_trick
+        dict_name = 'SK_' + generator.__name__ + '_' + k_trick
         run_times[dict_name] =SK_run_time
-
+        
+        #Run non kernilized PCA
+        SK_pca = PCA(n_components=2).fit(x)
+        SK_explain = np.cumsum(SK_pca.explained_variance_ratio_[:2])
+        
+        #Track explained varience
+        n_components = 2
+        eig_vals_total = sum(SK_k_pca.lambdas_)
+        var_exp = [(i / eig_vals_total)*100 for i in SK_k_pca.lambdas_]
+        cum_var_exp = np.cumsum(var_exp)
+        cum_var_exp = cum_var_exp[(n_components-1)]
+        variance_explained[dict_name] = cum_var_exp 
+        
+        dict_name = 'SK_' + generator.__name__ + '_nonkernlized'
+        variance_explained[dict_name] = SK_explain
+        
+        SK_pca = PCA(n_components=2).fit_transform(x)
+        SK_k_pca = KernelPCA(n_components=2, kernel=k_trick, 
+                             gamma=15).fit_transform(x)
+        
+        #Plot to compare
+        AJ_PCA.pca_plots(k_trick,generator,x,y,SK_pca,SK_k_pca,"SK_",True)  
+        
 #Save results
 pd.DataFrame.from_dict(run_times, orient='index').to_csv(
         'outputs/pca/pca_runtimes.csv')
@@ -150,7 +181,9 @@ kernels = [AJ_kernels.linear_kernel,AJ_kernels.rbf_kernel,
 
 benchmark_kernels = ["linear","rbf","poly"]
 
-data_benchmarks = [make_moons,make_circles,make_swiss_roll]
+data_benchmarks = [make_moons,make_circles,make_classification]
+
+k_means_acc = {}
 
 #Iterate through kernels to compare with non-kernelized Kmeans
 for k_trick in kernels:
@@ -166,21 +199,60 @@ for k_trick in kernels:
         #Add params when necessary
         if (k_trick.__name__ == "linear_kernel"):
             k = k_trick(x)
-        elif (k_trick.__name__ == "laplacian_kernel"):
-            poly = 5
+        elif (k_trick.__name__ == "poly_kernel"):
+            poly = 1
+            k = k_trick(x,poly)
+            acc = []
+            poly_var = []
+            for poly in range(1,50):
+                k = k_trick(x,poly)
+                k_center = AJ_kernels.center_kernel(k)
+                #k_centroids,k_clusters = AJ_kmeans.kmeans(k,2)
+                k_clusters = KMeans(n_clusters=2).fit_predict(k)
+                curr_acc = metrics.accuracy_score(y,k_clusters)
+                acc = acc + [curr_acc]
+                poly_var = poly_var + [poly]
+            #Use p value that had highest variance expalined
+            poly = poly_var[acc.index(max(acc))]
             k = k_trick(x,poly)
         else:
-            gamma = 15
+            #Iterate through to find gamma with highest accuracy
+            acc = []
+            gamma_var = []
+            for gamma in range(1,50):
+                k = k_trick(x,gamma)
+                k_center = AJ_kernels.center_kernel(k)
+                #k_centroids,k_clusters = AJ_kmeans.kmeans(k,2)
+                k_clusters = KMeans(n_clusters=2).fit_predict(k)
+                curr_acc = metrics.accuracy_score(y,k_clusters)
+                acc = acc + [curr_acc]
+                gamma_var = gamma_var + [gamma]
+            #Use p value that had highest variance expalined
+            gamma = gamma_var[acc.index(max(acc))]
             k = k_trick(x,gamma)
 
         #non kernilized Kmeans
         centroids,clusters = AJ_kmeans.kmeans(x,2)     
         
         #kernelized Kmeans
-        k_centroids,k_clusters = AJ_kmeans.kmeans(k,2)
+        #k_centroids,k_clusters = AJ_kmeans.kmeans(k,2)
+        k_clusters = KMeans(n_clusters=2).fit_predict(k)
+        
+        #Track accuracy
+        #kernelized
+        k_acc = metrics.accuracy_score(y,k_clusters)
+        dict_name = 'AJ_' + generator.__name__ + '_' + k_trick.__name__
+        k_means_acc[dict_name] = k_acc
+        #non-kernelized
+        k_acc = metrics.accuracy_score(y,clusters)
+        dict_name = 'AJ_' + generator.__name__ + '_nonkernlized'
+        k_means_acc[dict_name] = k_acc
         
         #plot original dataset
         AJ_kmeans.kmeans_plots(x,y,k_trick,generator,clusters,k_clusters)
+        
+pd.DataFrame.from_dict(k_means_acc, orient='index').to_csv(
+        'outputs/kmeans/kmeans_accuracy.csv')
 
 #%%
 ###############################################################################
