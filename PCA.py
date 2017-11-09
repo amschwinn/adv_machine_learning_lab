@@ -22,8 +22,11 @@ import pymysql.cursors
 import json
 
 import matplotlib.pyplot as plt
+from sklearn import metrics
+from mpl_toolkits.mplot3d import Axes3D
 
 #%%
+<<<<<<< HEAD
 '''
 ##Use our SIFT descriptors
 # Connect to the database.
@@ -72,6 +75,9 @@ Y = df.ix[:,4]
 X_std = StandardScaler().fit_transform(X)
 '''
 #%%
+=======
+#Compare 2 different PCA methods
+>>>>>>> master
 #We are getting the covariance matrix for this dataset
 def PCA(X_std):
     cov_mat = np.cov(X_std.T)
@@ -131,17 +137,18 @@ def PCA(X_std):
 
     return matrix_w
 
-#Get kPCA
-def kpca(k_centered, n_components):
+#Get PCA
+def pca(x, n_components, need_cov = False):
+    if need_cov == True:
+        x = np.cov(x)
     #Use centered k matrix to get eignvectors & eigenvalues from centered k
-    eigvals, eigvecs = eigh(k_centered)
-    
-    #Specify number of components we want to test
-    #n_components = 2
+    eig_vals, eig_vecs = eigh(x)
     
     #Keep eienvectors according to number of components with highest eigenvalues
-    X_kpca = np.column_stack((eigvecs[:,-comp] for comp in range(1,n_components+1)))
+    X_kpca = np.column_stack((eig_vecs[:,-comp] for comp in range(1,
+                              n_components+1)))
     
+<<<<<<< HEAD
     return X_kpca
 #%%
 '''
@@ -155,9 +162,141 @@ for k in range (0,156):
     elif k in range (137,156):
         plt.plot(Y_x[k],Y_y[k], 'g^')
 
+=======
+    eig_vals_total = sum(eig_vals)
+    var_exp = [(i / eig_vals_total)*100 for i in sorted(eig_vals,reverse=True)]
+    cum_var_exp = np.cumsum(var_exp)
+    cum_var_exp = cum_var_exp[(n_components-1)]
+>>>>>>> master
     
-plt.axis([-9, 9, -9, 9])
-plt.show()
-'''
+    return X_kpca, cum_var_exp
+#%%
+def pca_plots(k_trick,generator,x,y,pca,k_pca):
+    #Plot original dataset
+    #plot swiss roll in 3d
+    if generator.__name__ == 'make_swiss_roll':
+        chart = plt.figure()
+        ax = chart.add_subplot(111, projection='3d')
+        ax.scatter(x[:, 0], x[:, 1], x[:, 2], c=y, cmap=plt.cm.rainbow)
+        name = str(generator.__name__) + ' artificial dataset'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.savefig(filename)
+        plt.close()
+    #other benchmarks in 2d
+    else:
+        plt.figure()
+        plt.scatter(x[y==1, 0], x[y==1, 1], alpha=.75, color='red')
+        plt.scatter(x[y==0, 0], x[y==0, 1], alpha=.75, color='blue')
+        name = str(generator.__name__) + ' artificial dataset'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.savefig(filename)
+        plt.close()
+
+    #Plot non-kernilized PCA
+    #plot swiss roll in 3d
+    if generator.__name__ == 'make_swiss_roll':
+        #1st PC
+        plt.figure()
+        plt.scatter(pca[:, 0], np.zeros((len(pca[:, 0]),1)), alpha=.75,
+                    cmap=plt.cm.rainbow, c=y)
+        name = str(generator.__name__) + ' non-kernilized first PC'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.savefig(filename)
+        plt.close()
+
+        #1st and 2nd PCs
+        plt.figure()
+        plt.scatter(pca[:, 0], pca[:, 1], alpha=.75, c=y, 
+                    cmap=plt.cm.rainbow)
+        name = str(generator.__name__) + ' non-kernilized first 2 PCs'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.xlabel('First PC')
+        plt.ylabel('Second PC')
+        plt.savefig(filename)
+        plt.close()
+            
+    #All other benchmark dataset    
+    else: 
+        #1st PC
+        plt.figure()
+        plt.scatter(pca[y==1, 0], np.zeros((len(pca[y==1, 0]),1)), 
+                    alpha=.75, color='red')
+        plt.scatter(pca[y==0, 0], np.zeros((len(pca[y==0, 0]),1)), 
+                    alpha=.75, color='blue')
+        name = str(generator.__name__) + ' non-kernilized first PC'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.savefig(filename)
+        plt.close()
+
+        #1st and 2nd PCs
+        plt.figure()
+        plt.scatter(pca[y==1, 0], pca[y==1, 1], alpha=.75, color='red')
+        plt.scatter(pca[y==0, 0], pca[y==0, 1], alpha=.75, color='blue')
+        name = str(generator.__name__) + ' non-kernilized first 2 PCs'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.xlabel('First PC')
+        plt.ylabel('Second PC')
+        plt.savefig(filename)
+        plt.close()
+
+    #Plot kernilized k_pca
+    #plot swiss roll in 3d
+    if generator.__name__ == 'make_swiss_roll':
+        #1st PC
+        plt.figure()
+        plt.scatter(k_pca[:, 0], np.zeros((len(k_pca[:, 0]),1)), alpha=.75,
+                    cmap=plt.cm.rainbow, c=y)
+        name = str(generator.__name__) + ' ' + str(k_trick.__name__) + \
+                  ' first PC'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.savefig(filename)
+        plt.close()
+
+        #1st and 2nd PCs
+        plt.figure()
+        plt.scatter(k_pca[:, 0], k_pca[:, 1], alpha=.75, c=y, 
+                    cmap=plt.cm.rainbow)
+        name = str(generator.__name__) + ' ' + str(k_trick.__name__) + \
+                  ' first 2 PCs'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.xlabel('First PC')
+        plt.ylabel('Second PC')
+        plt.savefig(filename)
+        plt.close()     
+        
+    else:
+        #1st PC
+        plt.figure()
+        plt.scatter(k_pca[y==1, 0], np.zeros((len(k_pca[y==1, 0]),1)), 
+                    alpha=.75, color='red')
+        plt.scatter(k_pca[y==0, 0], np.zeros((len(k_pca[y==0, 0]),1)), 
+                    alpha=.75, color='blue')
+        name = str(generator.__name__) + ' ' + str(k_trick.__name__) + \
+                  ' first PC'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.savefig(filename)
+        plt.close()
+
+        #1st and 2nd PCs
+        plt.figure()
+        plt.scatter(k_pca[y==1, 0], k_pca[y==1, 1], alpha=.75, color='red')
+        plt.scatter(k_pca[y==0, 0], k_pca[y==0, 1], alpha=.75, color='blue')
+        name = str(generator.__name__) + ' ' + str(k_trick.__name__) + \
+                  ' first 2 PCs'
+        filename = 'outputs/pca/' + name
+        plt.title(name)
+        plt.xlabel('First PC')
+        plt.ylabel('Second PC')
+        plt.savefig(filename) 
+        plt.close()
 
 

@@ -24,7 +24,7 @@ def linear_kernel(X):
     k = X.dot(X.T)
     return k
 
-#get RBF kernel
+#get Gaussian RBF kernel
 def rbf_kernel(X, gamma):
     #Calc pairwise squared euclidean dist for every set of observations
     pair_dist = pdist(X, 'sqeuclidean')

@@ -1,0 +1,6 @@
+,0
+AJ_make_moons_linear_kernel,100.00000000000001
+AJ_make_moons_nonkernlized,100.0
+AJ_make_moons_rbf_kernel,57.113161842958235
+AJ_make_moons_poly_kernel,99.99999999999989
+AJ_make_moons_laplacian_kernel,34.86460775422824

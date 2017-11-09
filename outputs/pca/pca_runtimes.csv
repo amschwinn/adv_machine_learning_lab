@@ -1,0 +1,14 @@
+,0
+AJ_make_moons_linear_kernel,0.006913577515623698
+AJ_make_moons_rbf_kernel,0.34689487530079
+AJ_make_moons_poly_kernel,0.3575714142927746
+AJ_make_moons_laplacian_kernel,0.2585282929270942
+scikit_make_moons_linear,0.002135702859969335
+scikit_make_circles_linear,0.0018757523453820646
+scikit_make_swiss_roll_linear,0.0014214315372123032
+scikit_make_moons_rbf,0.0036886899007644303
+scikit_make_circles_rbf,0.004081381103651971
+scikit_make_swiss_roll_rbf,0.005684936025704079
+scikit_make_moons_poly,0.005256294219735391
+scikit_make_circles_poly,0.00532938061061472
+scikit_make_swiss_roll_poly,0.0042058254989334465

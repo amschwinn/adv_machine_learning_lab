@@ -24,7 +24,9 @@ def kmeans(X, k):
     dist = np.linalg.norm(centroids - prev_centroids, axis=None)
     #Run until there is no change between centroids of consecutive steps
     print('Before loop')
+    count = 0
     while dist != 0:
+        count += 1
         #Find closest cluster for each observation
         for i in range(len(X)):
             #Calculate the distnace between each observation and clusts
@@ -37,7 +39,42 @@ def kmeans(X, k):
             points = [X[j] for j in range(len(X)) if clusters[j] == i]
             centroids[i] = np.mean(points, axis=0)
         dist = np.linalg.norm(centroids - prev_centroids, axis=None)
-        print('Still converging centroids')
+        print('Converging step: '+str(count))
     print('centroids converged')
     
     return centroids, clusters
+
+#plot kmeans
+def kmeans_plots(x,y,k_trick,generator,clusters,k_clusters):
+    #plot original dataset
+    plt.figure()
+    plt.scatter(x[:, 0], x[:, 1], alpha=.75, c=y, 
+        cmap=plt.cm.rainbow)
+    name = str(generator.__name__) + ' artificial dataset'
+    filename = 'outputs/kmeans/' + name
+    plt.title(name)
+    plt.savefig(filename)
+    plt.show()
+    plt.close()
+    
+    #plot non-kernelized kmeans
+    plt.figure()
+    plt.scatter(x[:, 0], x[:, 1], alpha=.75, c=clusters, 
+        cmap=plt.cm.rainbow)
+    name = str(generator.__name__) + ' non-kernlized k-means'
+    filename = 'outputs/kmeans/' + name
+    plt.title(name)
+    plt.savefig(filename)
+    plt.show()
+    plt.close()
+    
+    #plot kernelized kmeans
+    plt.figure()
+    plt.scatter(x[:, 0], x[:, 1], alpha=.75, c=k_clusters, 
+        cmap=plt.cm.rainbow)
+    name = str(generator.__name__) + ' ' + str(k_trick.__name__) + 'kmeans'
+    filename = 'outputs/kmeans/' + name
+    plt.title(name)
+    plt.savefig(filename)
+    plt.show()
+    plt.close()
