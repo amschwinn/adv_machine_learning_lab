@@ -235,7 +235,7 @@ for k_trick in kernels:
         centroids,clusters = AJ_kmeans.kmeans(x,2)     
         
         #kernelized Kmeans
-        #k_centroids,k_clusters = AJ_kmeans.kmeans(k,2)
+        k_centroids,k_clusters = AJ_kmeans.kmeans(k,2)
         k_clusters = KMeans(n_clusters=2).fit_predict(k)
         
         #Track accuracy
