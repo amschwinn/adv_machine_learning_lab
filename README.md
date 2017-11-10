@@ -1,11 +1,10 @@
 # Advance Machine Learning Lab
 
 ## Austin Schwinn and Jeremie Blanchard 
+## M2 MLDM
 
-#### M2 MLDM
-
-##### Lab 1
-###### Kernel Methods
+#### Lab 1
+##### Kernel Methods
 For this lab, we compared kernelized and non-kernilzed forms on the following algorithms on non-linearly seperable datasets:
 	- PCA
 	- Kmeans
