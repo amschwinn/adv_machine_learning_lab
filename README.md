@@ -26,5 +26,5 @@ For each of the listed algorithms and datasets, we compared our own implimentati
 We compared the quality of the results, such as the explained variance with PCA or the accuracy of logisitic regression, as well
 as the run-time efficiency.
 
-The forth part of lab, we impliment one class SVM and Maximum Enclosing Ball in MatLab.
+**_In part 4 of the lab, we impliment one class SVM and Maximum Enclosing Ball in MatLab._**
 
