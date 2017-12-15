@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Dec  6 15:32:03 2017
+Advanced Machine Learning Lab
+MLDM M2
 
-@author: jerem
+Implimentation of multi-Arm Bandit Algorithm
+
+Austin Schwinn
+Jeremie Blanchard
+Oussama Bouldjedri
+
 """
 
 import numpy as np

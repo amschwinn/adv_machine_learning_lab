@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov 29 14:24:57 2017
+Advanced Machine Learning Lab
+MLDM M2
 
-@author: jerem
+Implimentation of Online Passive Aggressive Algorithm
+
+Austin Schwinn
+Jeremie Blanchard
+Oussama Bouldjedri
+
 """
 #Passive-aggressive
 #Binary Classification Algorithm
