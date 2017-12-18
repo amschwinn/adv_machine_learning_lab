@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import confusion_matrix
+from math import ceil
 import pandas as pd
 import numpy as np
 import os
@@ -48,15 +49,16 @@ x_smote, y_smote = sm.fit_sample(x_sub,y_sub)
 
 #%%
 #Add weights
-weights = y_smote
-weights[weights == 1] = 100
-weights[weights != 1] = 1
+weights = np.copy(y_smote)
+weights[weights == 1] = ceil(1/len(weights))
+weights[weights != 1] = ceil(1/len(weights))
 
 #%%
 #Implement resampled dataset with AdaBoostClassifier
-ada = AdaBoostClassifier().fit(x_smote,y_smote,weights)
+ada = AdaBoostClassifier(n_estimators=100).fit(x_smote,y_smote,weights)
 
 pred_val = ada.predict(x_val)
 
 ada_results = confusion_matrix(y_val,pred_val)
 ada_results
+
