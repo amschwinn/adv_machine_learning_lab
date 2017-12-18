@@ -47,8 +47,14 @@ sm = SMOTE(random_state=10)
 x_smote, y_smote = sm.fit_sample(x_sub,y_sub)
 
 #%%
+#Add weights
+weights = y_smote
+weights[weights == 1] = 100
+weights[weights != 1] = 1
+
+#%%
 #Implement resampled dataset with AdaBoostClassifier
-ada = AdaBoostClassifier().fit(x_smote,y_smote)
+ada = AdaBoostClassifier().fit(x_smote,y_smote,weights)
 
 pred_val = ada.predict(x_val)
 
